@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react"
 import { Search, Check, MoreHorizontal, User, Settings, Plus } from "lucide-react"
-import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 
 interface Organization {

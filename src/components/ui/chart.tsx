@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode } from "react"
+import type { ReactNode } from "react"
 import { cn } from "../../lib/utils"
 
 export type ChartConfig = Record<string, { label: string; color?: string }>
