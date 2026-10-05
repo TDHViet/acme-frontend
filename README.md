@@ -66,12 +66,12 @@ npm install
 ### 3. Environment setup
 Create a `.env` file in the root directory:
 ```bash
-VITE_API_URI=<Your_api_url>
+VITE_API_URL=<Your_api_url>
 ```
 
 Example:
 ```env
-VITE_API_URI=http://localhost:3000
+VITE_API_URL=http://localhost:3000
 ```
 
 ### 4. Start development server
@@ -93,38 +93,34 @@ Before running this project, make sure you have the following installed:
 
 ```
 src/
-├── components/              # Reusable UI components
-│   ├── ui/                 # shadcn/ui components
-│   │   ├── button.tsx      # Button component
-│   │   ├── card.tsx        # Card component
-│   │   ├── input.tsx       # Input component
-│   │   ├── calendar.tsx    # Calendar component
-│   │   └── chart.tsx       # Chart components
-│   ├── icons/              # Custom icon components
-│   ├── AuthThemeSwitcher.tsx
-│   ├── ProtectedRoute.tsx  # Route protection
-│   ├── RangePicker.tsx     # Date range picker
-│   ├── ChartBarInteractive.tsx
-│   └── UserProfileDropdown.tsx
-├── pages/                  # Page components
-│   ├── AuthSignIn.tsx      # Login page
-│   ├── AuthSignUp.tsx      # Registration page
-│   ├── Dashboard.tsx       # Main dashboard
-│   └── hooks.ts           # Custom hooks
-├── lib/                   # Utility functions
-│   └── utils.ts           # Common utilities
-├── store.ts               # Redux store configuration
-├── App.tsx                # Main application component
-└── main.tsx               # Application entry point
+├── components/
+│   ├── ui/                  # shadcn/ui components
+│   ├── layout/              # App shell: sidebar, header, route guards
+│   ├── icons/brand-icons.tsx
+│   └── mode-toggle.tsx
+├── features/
+│   ├── auth/                # Auth layout, password input, social buttons
+│   └── dashboard/           # Date range filter, visitors chart, contact cards
+├── pages/                   # Route components (lazy-loaded)
+├── store/                   # Redux Toolkit store + auth slice
+├── lib/                     # api client, token helpers, cn()
+├── App.tsx                  # Routes
+└── main.tsx                 # Providers (Redux, theme, tooltip, toaster)
 ```
+
+### UI conventions
+
+- Add UI primitives with `npx shadcn@latest add <component>` instead of writing them by hand.
+- Use theme tokens (`bg-background`, `text-muted-foreground`, `bg-sidebar`...) — never raw `gray-*`/`black`/`white`.
+- Theme is managed by `next-themes` (`light` / `dark` / `system`, stored under `theme` in localStorage).
+- Toasts use `sonner` via `@/components/ui/sonner`.
 
 ## 📱 Responsive Design
 
 The application is built with a mobile-first approach:
 
-- **Mobile (< 768px)**: Drawer navigation, stacked layouts
-- **Tablet (768px - 1024px)**: Icon rail navigation
-- **Desktop (> 1024px)**: Full sidebar with labels
+- **Mobile (< 768px)**: Sidebar opens as a sheet (drawer)
+- **≥ 768px**: Collapsible sidebar (icon rail when collapsed, toggle with `Ctrl/⌘ + B`; state persisted in a cookie)
 
 ## 🔐 Authentication Flow
 
@@ -132,7 +128,7 @@ The application is built with a mobile-first approach:
 1. User enters email and password
 2. Form validation with Zod schema
 3. API call to verify credentials
-4. JWT token stored in localStorage
+4. JWT token stored in localStorage (expiry checked client-side before entering protected routes)
 5. Redirect to dashboard
 6. Toast notification for success/error
 
@@ -152,7 +148,7 @@ The application is built with a mobile-first approach:
 
 ### Base Configuration
 ```typescript
-const API_BASE_URL = import.meta.env.VITE_API_URI
+const API_BASE_URL = import.meta.env.VITE_API_URL
 ```
 
 ### Authentication Headers
@@ -198,7 +194,7 @@ This creates an optimized production build in the `dist/` directory.
 
 1. **API Connection Errors:**
    - Check if backend is running
-   - Verify VITE_API_URI in .env file
+   - Verify VITE_API_URL in .env file
    - Ensure CORS is configured correctly
 
 2. **Build Errors:**
